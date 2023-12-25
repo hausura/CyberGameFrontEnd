@@ -6,19 +6,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useContext, useEffect } from 'react';
 import { UserContext } from './context/UserContext';
 import AppRoutes from './routes/AppRoutes';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleRefresh } from './Redux/actions/userAction';
 
 function App() {
-  const {user,loginContext}=useContext(UserContext);
-  // const [hideHeader,setHideHeader]= useState(false);
-  // useEffect(() =>{
-  //     if(window.location.pathname === '/login'){
-  //       setHideHeader(true)
-  //     }
-  // },[])
-
+  const dispatch =useDispatch();
   useEffect(()=>{
     if(localStorage.getItem("token")){
-      loginContext(localStorage.getItem("email"),localStorage.getItem("token"))
+      // loginContext(localStorage.getItem("email"),localStorage.getItem("token"))
+      dispatch(handleRefresh())
     }
   },[])
   return (

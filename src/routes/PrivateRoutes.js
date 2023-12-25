@@ -1,11 +1,11 @@
 import { UserContext } from "../context/UserContext"
 import { useContext, } from "react"
 import { Alert } from "react-bootstrap"
+import { useSelector } from "react-redux"
 
 const PrivateRoute = (props) =>{
 
-    const {user} =useContext(UserContext);
-    console.log('check private: ',user)
+    const user = useSelector(state => state.user.account)
     if(!user || !user.auth ){
         return(
         <Alert variant="danger" dismissible>

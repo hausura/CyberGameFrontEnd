@@ -5,21 +5,22 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes,Route,Link } from 'react-router-dom';
-import { UserProvider } from './context/UserContext';
-
+// import { UserProvider } from './context/UserContext';
+import store from './Redux/store';
+import { Provider } from 'react-redux';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <UserProvider>
-      <BrowserRouter>
-        <App />
-        <Routes>
-        {/* <Route path='/login' element={<Login />}></Route> */}
-        </Routes>
-      </BrowserRouter>
-    </UserProvider>
-  </React.StrictMode>
+  <Provider store ={store}>
+    <React.StrictMode>
+        <BrowserRouter>
+          <App />
+          <Routes>
+          {/* <Route path='/login' element={<Login />}></Route> */}
+          </Routes>
+        </BrowserRouter>
+    </React.StrictMode>
+  </Provider>
 );
 
     {/* <BrowserRouter>

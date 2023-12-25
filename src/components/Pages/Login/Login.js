@@ -4,38 +4,44 @@ import { loginApi } from '../../services/UserService';
 import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../../context/UserContext';
+import { handleLoginRedux } from '../../../Redux/actions/userAction';
+import { useDispatch,useSelector } from 'react-redux';
 
 
 const Login = () =>{
-    const [showPassword, setShowPassword] = useState(false);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const isLoading=useSelector(state =>state.user.isLoading)
+    const account=useSelector(state =>state.user.account)
+
+
+    // const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState('');
     const [userName, setUserName] = useState('');
-    const [showIcon, setShowIcon] = useState(false);
-    const [loadingApi,setLoadingApi]= useState(false);
-    const { loginContext } = useContext(UserContext);
+    // const [showIcon, setShowIcon] = useState(false);
+    // const [loadingApi,setLoadingApi]= useState(false);
+    // const { loginContext } = useContext(UserContext);
 
-
-    const navigate = useNavigate();
 
     const handleLogin = async () =>{
+        
         if(!userName || !password){
             toast.error("Email/Password is required!");
             return;
         }
-        setLoadingApi(true);
-        let res = await loginApi(userName.trim(),password.trim());
-        if (res && res.token){
-            navigate("/");
-            toast.success("login");
-            loginContext(userName,res.token)
+        dispatch(handleLoginRedux(userName,password));
+        // let res = await loginApi(userName.trim(),password.trim());
+        // if (res && res.token){
+        //     navigate("/");
+        //     toast.success("login");
+        //     loginContext(userName,res.token)
 
-        }
-        else{
-            if(res && res.status ===400){
-                toast.error(res.data.error);
-            }
-        }
-        setLoadingApi(false);
+        // }
+        // else{
+        //     if(res && res.status ===400){
+        //         toast.error(res.data.error);
+        //     }
+        // }
     }
     const handleEnter = (e) =>{
         if(e && e.key === "Enter"){
@@ -45,6 +51,12 @@ const Login = () =>{
     const handleGoBack =async() =>{
         await(navigate("/"));
     }
+
+    useEffect(() =>{
+        if ( account && account.auth ===true){
+            navigate('/')
+        }
+    }, [account])
     // const togglePasswordVisibility = () => {
     //   setShowPassword(!showPassword);
     //   setShowIcon(!showIcon);
@@ -57,16 +69,17 @@ const Login = () =>{
                 placeholder="username/email" 
                 className="form-control"
                 value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                onChange={(e) => setUserName(e.target.value.trim())}
                 onKeyDown={(e) => handleEnter(e)}
             />
 
                 <input
                     placeholder="password" 
                     className="form-control"
-                    type={showPassword ? 'text' : 'password'}
+                    // type={showPassword ? 'text' : 'password'}
+                    type='password'
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value.trim())}
                     onKeyDown={(e) => handleEnter(e)}
                 />
                 
@@ -75,7 +88,7 @@ const Login = () =>{
                 disabled={userName && password ? false : true}
                 onClick={handleLogin} 
             >
-            {loadingApi && <i className='fa-solid fa-spinner fa-spin-pulse'></i>}
+                {isLoading && <i className='fa-solid fa-spinner fa-spin-pulse'></i>}
                 Login
             </button>
             <span>

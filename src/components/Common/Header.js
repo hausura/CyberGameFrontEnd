@@ -6,18 +6,29 @@ import logo from '../../assets/logo.png'
 import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
+// import { useContext } from 'react';
+// import { UserContext } from '../../context/UserContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { handleLoginRedux, handleLogoutRedux } from '../../Redux/actions/userAction';
+import { useEffect } from 'react';
 
 const Header=()=>{
-
-  const {logout ,user} = useContext(UserContext);
+  const dispatch = useDispatch();
+  const user =useSelector(state => state.user.account)
+  // const {logout ,user} = useContext(UserContext);
   const navigate =useNavigate();
     const handleLogout = () =>{
-      logout()
-      navigate("/");
-      toast.success("Logouted");
+      dispatch(handleLogoutRedux());
+      // logout()
+      // navigate("/");
+      // toast.success("Logouted");
     }
+    useEffect(() =>{
+      if ( user && user.auth ===false){
+          navigate('/')
+      }
+   }, [user])
+
     return(
     <Navbar expand="lg" 
     className="bg-body-tertiary" 
@@ -48,10 +59,10 @@ const Header=()=>{
               </NavLink>
           </Nav>
 
-            {user && user.email &&
+            {user && user.userName &&
               <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text>
-                  WELCOME:<b>{user.email}</b> 
+                  WELCOME:<b>{user.userName}</b> 
                 </Navbar.Text>
               </Navbar.Collapse>
             } 
